@@ -2,6 +2,17 @@ import click
 from pathlib import Path
 
 
+def is_startswith_end_parenthesis(text: str) -> bool:
+    """
+    カッコ閉じで始まっているかどうか
+
+    例:
+    - "」テスト" は True
+    - ")テスト" は True
+    """
+    return text.startswith("」") or text.startswith(")") or text.startswith("）")
+
+
 def insert_newline_after_period(text: str) -> str:
     """
     「。」の後に改行を入れる
@@ -10,8 +21,12 @@ def insert_newline_after_period(text: str) -> str:
     for index, segment in enumerate(segments):
         if index == len(segments) - 1:
             break
+
         next_segment = segments[index + 1] if index + 1 < len(segments) else ""
-        if not next_segment.startswith("\n"):
+
+        if not next_segment.startswith("\n") and not is_startswith_end_parenthesis(
+            next_segment
+        ):
             result_segment = segment + "。\n"
         else:
             result_segment = segment + "。"
