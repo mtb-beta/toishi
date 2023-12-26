@@ -37,6 +37,28 @@ def insert_newline_after_period(text: str) -> str:
     return text
 
 
+def normalize_end_period(text: str) -> str:
+    """
+    文末に必ず「。」をつける
+    """
+    segments = text.split("\n")
+
+    for index, segment in enumerate(segments):
+        result_segment = segment
+
+        if segment == "":
+            continue
+        if segment.endswith("。"):
+            result_segment = segment
+        else:
+            result_segment = segment + "。"
+
+        segments[index] = result_segment
+
+    text = "\n".join(segments)
+    return text
+
+
 @click.command()
 @click.argument("filepath")
 def toishi(filepath: str):
@@ -48,6 +70,9 @@ def toishi(filepath: str):
 
     # 「。」の後に改行を入れる
     filetext = insert_newline_after_period(filetext)
+
+    # 文末に必ず「。」をつける
+    filetext = normalize_end_period(filetext)
 
     filepath.write_text(filetext, encoding="utf-8")
     click.echo("Done!")
