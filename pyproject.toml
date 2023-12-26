@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "toishi"
+version = "0.1.0"
+description = "日本の伝統的な刃物の研ぎに使用される砥石をモチーフにしている。テキストを鋭く整形するツール"
+authors = ["Tatsuya Matoba <tatsuya.matoba.wk.jp@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+click = "^8.1.7"
+ruff = "^0.1.9"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+toishi = "toishi:toishi"
