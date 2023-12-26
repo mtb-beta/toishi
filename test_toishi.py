@@ -71,6 +71,7 @@ class TestToishi:
             ("テストです。\nテスト。", "テストです。\nテスト。\n"),
             ("テストです。\n\nテスト\n", "テストです。\n\nテスト。\n"),
             ("テスト\nテスト\nテスト\n", "テスト。\nテスト。\nテスト。\n"),
+            ("## タイトル\nこれはテストです", "## タイトル\nこれはテストです。"),
         ],
     )
     def test_always_end_with_period(
@@ -78,6 +79,8 @@ class TestToishi:
     ):
         """
         文末に必ず「。」をつけるテストケース
+
+        ただし、マークダウンのタイトル行は除く
         """
         # arrange
         test_filepath = self._setup_test_file(tmp_path, original_text)
