@@ -31,10 +31,31 @@ def is_markdown_title(text: str) -> bool:
     )
 
 
+def is_markdonw_item(text: str) -> bool:
+    """
+    マークダウンの箇条書きかどうか
+
+    例:
+    - "- テスト" は True
+    - "+ テスト" は True
+    - "* テスト" は True
+    """
+    return text.startswith("- ") or text.startswith("+ ") or text.startswith("* ")
+
+
 def insert_newline_after_period(text: str) -> str:
     """
     「。」の後に改行を入れる
     """
+
+    # リストの場合は、改行を入れないようにする
+    lines = text.split("\n")
+    for index, line in enumerate(lines):
+        if is_markdonw_item(line):
+            lines[index] = line.replace("。", "<escape>")
+
+    text = "\n".join(lines)
+
     segments = text.split("。")
     for index, segment in enumerate(segments):
         if index == len(segments) - 1:
@@ -52,6 +73,10 @@ def insert_newline_after_period(text: str) -> str:
         segments[index] = result_segment
 
     text = "".join(segments)
+
+    # リストの場合は、改行を入れないようにする
+    text = text.replace("<escape>", "。")
+
     return text
 
 
@@ -72,6 +97,8 @@ def normalize_end_period(text: str) -> str:
         if segment == "":
             continue
         if is_markdown_title(segment):
+            continue
+        if is_markdonw_item(segment):
             continue
         if segment.endswith("。"):
             result_segment = segment

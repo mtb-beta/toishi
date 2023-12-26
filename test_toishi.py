@@ -43,6 +43,10 @@ class TestToishi:
             ("テストです。「テスト。」です。", "テストです。\n「テスト。」です。\n"),
             ("テストです。（テスト。）です。", "テストです。\n（テスト。）です。\n"),
             ("テストです。(テスト。)です。", "テストです。\n(テスト。)です。\n"),
+            (
+                "- テスト。\n- テス。テスト。\n- テスト",
+                "- テスト。\n- テス。テスト。\n- テスト",
+            ),
         ],
     )
     def test_insert_newline_after_period(
@@ -80,7 +84,7 @@ class TestToishi:
         """
         文末に必ず「。」をつけるテストケース
 
-        ただし、マークダウンのタイトル行は除く
+        ただし、マークダウンのタイトル行や箇条書きは除く
         """
         # arrange
         test_filepath = self._setup_test_file(tmp_path, original_text)
