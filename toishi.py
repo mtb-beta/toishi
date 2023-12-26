@@ -13,6 +13,24 @@ def is_startswith_end_parenthesis(text: str) -> bool:
     return text.startswith("」") or text.startswith(")") or text.startswith("）")
 
 
+def is_markdown_title(text: str) -> bool:
+    """
+    マークダウンのタイトルかどうか
+
+    例:
+    - "# テスト" は True
+    - "## テスト" は True
+    """
+    return (
+        text.startswith("# ")
+        or text.startswith("## ")
+        or text.startswith("### ")
+        or text.startswith("#### ")
+        or text.startswith("##### ")
+        or text.startswith("###### ")
+    )
+
+
 def insert_newline_after_period(text: str) -> str:
     """
     「。」の後に改行を入れる
@@ -37,6 +55,35 @@ def insert_newline_after_period(text: str) -> str:
     return text
 
 
+def normalize_end_period(text: str) -> str:
+    """
+    文末に必ず「。」をつける
+
+    ただし、以下のケースは除く
+
+    - 空行
+    - マークダウンのタイトル
+    """
+    segments = text.split("\n")
+
+    for index, segment in enumerate(segments):
+        result_segment = segment
+
+        if segment == "":
+            continue
+        if is_markdown_title(segment):
+            continue
+        if segment.endswith("。"):
+            result_segment = segment
+        else:
+            result_segment = segment + "。"
+
+        segments[index] = result_segment
+
+    text = "\n".join(segments)
+    return text
+
+
 @click.command()
 @click.argument("filepath")
 def toishi(filepath: str):
@@ -48,6 +95,9 @@ def toishi(filepath: str):
 
     # 「。」の後に改行を入れる
     filetext = insert_newline_after_period(filetext)
+
+    # 文末に必ず「。」をつける
+    filetext = normalize_end_period(filetext)
 
     filepath.write_text(filetext, encoding="utf-8")
     click.echo("Done!")

@@ -62,3 +62,34 @@ class TestToishi:
         assert result.exit_code == 0
         actual_text = test_filepath.read_text(encoding="utf-8")
         assert actual_text == expected_text
+
+    @pytest.mark.parametrize(
+        "original_text, expected_text",
+        [
+            ("テスト。はい\nテストです。", "テスト。\nはい。\nテストです。\n"),
+            ("テストです。", "テストです。\n"),
+            ("テストです。\nテスト。", "テストです。\nテスト。\n"),
+            ("テストです。\n\nテスト\n", "テストです。\n\nテスト。\n"),
+            ("テスト\nテスト\nテスト\n", "テスト。\nテスト。\nテスト。\n"),
+            ("## タイトル\nこれはテストです", "## タイトル\nこれはテストです。"),
+        ],
+    )
+    def test_always_end_with_period(
+        self, tmp_path, target, original_text, expected_text
+    ):
+        """
+        文末に必ず「。」をつけるテストケース
+
+        ただし、マークダウンのタイトル行は除く
+        """
+        # arrange
+        test_filepath = self._setup_test_file(tmp_path, original_text)
+
+        # act
+        runner = CliRunner()
+        result = runner.invoke(target, [str(test_filepath.absolute())])
+
+        # assert
+        assert result.exit_code == 0
+        actual_text = test_filepath.read_text(encoding="utf-8")
+        assert actual_text == expected_text
