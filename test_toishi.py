@@ -11,8 +11,12 @@ class TestToishi:
 
     def test_toishi_call(self, tmp_path, target):
         # arrange
-        original_text = "テストです。\nテスト2行目です。\n\nテスト3行目です。テスト4行目です。"
-        expected_text = "テストです。\nテスト2行目です。\n\n\nテスト3行目です。\nテスト4行目です。"
+        original_text = (
+            "テストです。\nテスト2行目です。\n\nテスト3行目です。テスト4行目です。"
+        )
+        expected_text = (
+            "テストです。\nテスト2行目です。\n\n\nテスト3行目です。\nテスト4行目です。"
+        )
         test_filepath = tmp_path.joinpath("test.txt")
         test_filepath.write_text(original_text, encoding="utf-8")
 
