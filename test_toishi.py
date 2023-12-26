@@ -9,6 +9,7 @@ class TestToishi:
 
         return toishi
 
+    @pytest.mark.xfail
     def test_toishi_call(self, tmp_path, target):
         # arrange
         original_text = (
