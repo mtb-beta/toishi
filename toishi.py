@@ -2,6 +2,9 @@ import click
 from pathlib import Path
 
 
+END_PARAGRAPH_MARKS = ["。", "」", ")", "）"]
+
+
 def is_startswith_end_parenthesis(text: str) -> bool:
     """
     カッコ閉じで始まっているかどうか
@@ -10,7 +13,18 @@ def is_startswith_end_parenthesis(text: str) -> bool:
     - "」テスト" は True
     - ")テスト" は True
     """
-    return text.startswith("」") or text.startswith(")") or text.startswith("）")
+    return any(text.startswith(mark) for mark in END_PARAGRAPH_MARKS)
+
+
+def is_endwith_end_parenthesis(text: str) -> bool:
+    """
+    カッコ閉じで終わっているかどうか
+
+    例:
+    - "テスト」" は True
+    - "テスト)" は True
+    """
+    return any(text.endswith(mark) for mark in END_PARAGRAPH_MARKS)
 
 
 def is_markdown_title(text: str) -> bool:
@@ -46,9 +60,12 @@ def is_markdonw_item(text: str) -> bool:
 def insert_newline_after_period(text: str) -> str:
     """
     「。」の後に改行を入れる
+
+    ただし、以下の場合は改行を入れない
+    - マークダウンの箇条書き
+    - カッコ閉じで終わっている
     """
 
-    # リストの場合は、改行を入れないようにする
     lines = text.split("\n")
     for index, line in enumerate(lines):
         if is_markdonw_item(line):
@@ -88,6 +105,8 @@ def normalize_end_period(text: str) -> str:
 
     - 空行
     - マークダウンのタイトル
+    - マークダウンの箇条書き
+    - 括弧閉じで終わる
     """
     segments = text.split("\n")
 
@@ -99,6 +118,8 @@ def normalize_end_period(text: str) -> str:
         if is_markdown_title(segment):
             continue
         if is_markdonw_item(segment):
+            continue
+        if is_endwith_end_parenthesis(segment):
             continue
         if segment.endswith("。"):
             result_segment = segment
