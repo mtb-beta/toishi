@@ -80,7 +80,9 @@ def insert_newline_after_period(text: str) -> str:
 
         next_segment = segments[index + 1] if index + 1 < len(segments) else ""
 
-        if not next_segment.startswith("\n") and not is_startswith_end_parenthesis(next_segment):
+        if not next_segment.startswith("\n") and not is_startswith_end_parenthesis(
+            next_segment
+        ):
             result_segment = segment + "。\n"
         else:
             result_segment = segment + "。"
